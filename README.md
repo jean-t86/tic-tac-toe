@@ -4,11 +4,11 @@
 * [Description](#description)
 * [General information](#general-information)
 * [Technologies](#technologies)
-* [Stage 1/5](#stage-1/5)
-* [Stage 2/5](#stage-2/5)
-* [Stage 3/5](#stage-3/5)
-* [Stage 4/5](#stage-4/5)
-* [Stage 5/5](#stage-5/5)
+* [Stage 1/5](#stage-1)
+* [Stage 2/5](#stage-2)
+* [Stage 3/5](#stage-3)
+* [Stage 4/5](#stage-4)
+* [Stage 5/5](#stage-5)
 
 ## Description
 
@@ -30,7 +30,7 @@ using methods, handling errors, and processing user input.
 
 ## Developer notes
 
-## Stage 1/5
+## Stage 1
 ### Welcome to the battlefield!
 To start things off, the program needs to be able to print any state of the field. You’ll write a serious multi-line 
 program using a lot of prints.
@@ -54,7 +54,7 @@ moves for both players.
 Your first task in this project is to print any state of the field in the console output. Do not forget to show the 
 moves for both players.
 
-## Stage 2/5
+## Stage 2
 ### The user is the gamemaster
 Now it’s time to analyze user input and print the state of the field depending on it. You’ll learn to address specific 
 positions in a string to achieve the required outcome.
@@ -72,7 +72,7 @@ In this stage, you will write a program that:
   line of the grid, and adds a space between all characters in the grid.
 
 
-## Stage 3/5
+## Stage 3
 ### What's up on the field?
 Now we’re going to write a fully-functioning multi-line program that responds to the user’s actions and analyzes the 
 state of the field. Not only will it tell you who is winning, but it will also determine if the situation on a given 
@@ -98,7 +98,7 @@ In this stage, we will assume that either X or O can start the game.
 
 You can choose whether to use a space or underscore _ to print empty cells.
 
-## Stage 4/5
+## Stage 4
 ### First move!
 Tic-tac-toe is not all about analysis – a game is meant to be played! Write a program that can change the state of the
 field, as your first real step toward a fully-functioning game application!
@@ -147,7 +147,7 @@ Keep asking until the user enters coordinates that represent an empty cell on th
 move, and then output it to the console. You should output the field only 2 times: once before the user’s move, and once
 after the user has entered a legal move.
 
-## Stage 5/5
+## Stage 5
 Fight!
 Finally! Thanks to this app, you can always challenge a friend to play a quick game of Tic-Tac-Toe!
 
