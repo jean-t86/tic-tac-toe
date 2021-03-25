@@ -1,5 +1,7 @@
 package tictactoe
 
+import kotlin.math.abs
+
 fun main() {
     //region Get user input
     print("Enter cells: ")
@@ -12,121 +14,94 @@ fun main() {
     }
     //endregion
 
-    printGrid(userInput)
+    val gameBoard = gameBoardGrid(userInput)
+    printGrid(gameBoard)
 
-    val hasWonOnTheHorizontal = hasWonOnTheHorizontal(userInput)
-    val hasWonOnTheVertical = hasWonOnTheVertical(userInput)
-    val hasWonOnTheDiagonal = hasWonOnTheDiagonal(userInput)
     when {
-        hasWonOnTheHorizontal.first -> {
-            println("${hasWonOnTheHorizontal.second} wins")
-        }
-        hasWonOnTheVertical(userInput).first -> {
-            println("${hasWonOnTheVertical.second} wins")
-        }
-        hasWonOnTheDiagonal(userInput).first -> {
-            println("${hasWonOnTheDiagonal.second} wins")
-        }
-        isGridFull(userInput) -> {
-            println("Draw")
-        }
-        !hasWonOnTheHorizontal.first || !hasWonOnTheVertical.first -> {
-            println("Impossible")
-        }
-        isGameNotFinished(userInput) -> {
-            println("Game not finished")
-        }
+        !isBoardValid(gameBoard, userInput) -> println("Impossible")
+        hasWon('O', gameBoard) -> println("O wins")
+        hasWon('X', gameBoard) -> println("X wins")
+        isDraw(gameBoard, userInput) -> println("Draw")
+        else -> println("Game not finished")
     }
 }
 
-fun printGrid(userInput: String) {
-    val grid =
-        """
-            ---------
-            | ${userInput[0]} ${userInput[1]} ${userInput[2]} |
-            | ${userInput[3]} ${userInput[4]} ${userInput[5]} |
-            | ${userInput[6]} ${userInput[7]} ${userInput[8]} |
-            ---------
-        """.trimIndent()
-    println(grid)
+fun gameBoardGrid(userInput: String): List<List<Char>> {
+    val gameBoard: MutableList<List<Char>> = mutableListOf()
+    val inputList = userInput.toList()
+    gameBoard.add(inputList.subList(0, 3))
+    gameBoard.add(inputList.subList(3, 6))
+    gameBoard.add(inputList.subList(6, 9))
+
+    return gameBoard
 }
 
-fun hasWonOnTheHorizontal(userInput: String): Pair<Boolean, Char?> {
-    val firstRow = userInput[0] == userInput[1] && userInput[1] == userInput[2]
-    val secondRow = userInput[3] == userInput[4] && userInput[4] == userInput[5]
-    val thirdRow = userInput[6] == userInput[7] && userInput[7] == userInput[8]
+fun printGrid(gameBoard: List<List<Char>>) {
+    println("-".repeat(9))
 
-    var playerWins = firstRow || secondRow || thirdRow
-    val twoPlayersWin = (firstRow && secondRow) ||
-            (secondRow && thirdRow) ||
-            (firstRow && thirdRow)
+    for (col in 0..2) {
+        print("| ")
+        for (row in 0..2) {
+            print(gameBoard[col][row])
+            print(" ")
+        }
+        print("|")
+        println()
+    }
 
-    var winningPlayer: Char? = null
-    if (!twoPlayersWin) {
-        if (playerWins) {
-            winningPlayer = when {
-                firstRow -> userInput[0]
-                secondRow -> userInput[3]
-                thirdRow -> userInput[6]
-                else -> null
+    println("-".repeat(9))
+}
+
+fun isDraw(gameBoard: List<List<Char>>, userInput: String): Boolean {
+    return !hasWon('X', gameBoard) &&
+            !hasWon('O', gameBoard) &&
+            userInput.all { it == 'O' || it == 'X' }
+}
+
+fun hasWon(char: Char, gameBoard: List<List<Char>>): Boolean {
+    var threeInARow = false
+
+    rowWin@ for (col in 0..2) {
+        var charInARow = 0
+        for (row in 0..2) {
+            // Travers board game by rows
+            if (gameBoard[col][row] == char) {
+                charInARow++
             }
         }
-    } else {
-        playerWins = false
-        winningPlayer = null
+        if (charInARow == 3) {
+            threeInARow = true
+            break@rowWin
+        }
     }
 
-    return Pair(playerWins, winningPlayer)
-}
-
-fun hasWonOnTheVertical(userInput: String): Pair<Boolean, Char?> {
-    val firstCol = userInput[0] == userInput[3] && userInput[3] == userInput[6]
-    val secondCol = userInput[1] == userInput[4] && userInput[4] == userInput[7]
-    val thirdCol = userInput[2] == userInput[5] && userInput[5] == userInput[8]
-
-    var playerWins = firstCol || secondCol || thirdCol
-    val twoPlayersWin = (firstCol && secondCol) ||
-            (secondCol && thirdCol) ||
-            (firstCol && thirdCol)
-
-    var winningPlayer: Char? = null
-    if (!twoPlayersWin) {
-        if (playerWins) {
-            winningPlayer = when {
-                firstCol -> userInput[0]
-                secondCol -> userInput[1]
-                thirdCol -> userInput[2]
-                else -> null
+    colWin@ for (col in 0..2) {
+        var charInACol = 0
+        for (row in 0..2) {
+            // Travers board game by columns
+            if (gameBoard[row][col] == char) {
+                charInACol++
             }
         }
-    } else {
-        playerWins = false
-        winningPlayer = null
-    }
-
-    return Pair(playerWins, winningPlayer)
-}
-
-fun hasWonOnTheDiagonal(userInput: String): Pair<Boolean, Char?> {
-    val firstDiagonal = userInput[0] == userInput[4] && userInput[4] == userInput[8]
-    val secondDiagonal = userInput[2] == userInput[4] && userInput[4] == userInput[6]
-
-    val playerWins = firstDiagonal || secondDiagonal
-
-    var winningPlayer: Char? = null
-    if (playerWins) {
-        winningPlayer = when {
-            firstDiagonal -> userInput[0]
-            secondDiagonal -> userInput[2]
-            else -> null
+        if (charInACol == 3) {
+            threeInARow = true
+            break@colWin
         }
     }
 
-    return Pair(playerWins, winningPlayer)
+    threeInARow = threeInARow ||
+            (gameBoard[0][0] == char &&
+                    gameBoard[1][1] == char &&
+                    gameBoard[2][2] == char)
+
+    threeInARow = threeInARow ||
+            (gameBoard[0][2] == char &&
+                    gameBoard[1][1] == char &&
+                    gameBoard[2][0] == char)
+
+    return threeInARow
 }
 
-fun isGridFull(userInput: String) =
-    userInput.all { char -> char != '_' }
-
-fun isGameNotFinished(userInput: String) =
-    userInput.any { char -> char == '_' }
+fun isBoardValid(gameBoard: List<List<Char>>, userInput: String): Boolean =
+    !(hasWon('X', gameBoard) && hasWon('O', gameBoard)) &&
+            abs(userInput.count { it == 'X' } - userInput.count { it == 'O' }) < 2
